@@ -1,0 +1,88 @@
+#include <windows.h>
+#include "config_resource.h"
+
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+
+// Control order is tab order, so the declarations below run straight down the
+// dialog: each label immediately precedes the control it names, which is also
+// what makes a screen reader announce the right label for the focused field.
+//
+// Head size, bass lift and high lift accept negative values, so they must not
+// carry ES_NUMBER - that style silently refuses the minus key.
+//
+// Access keys are all distinct: V R P L I Z C K N W H B G S X A D T E Y F O.
+
+IDD_CONFIG DIALOGEX 0, 0, 296, 384
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+CAPTION "Orpheus Native Configuration"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "&Voice:", -1, 7, 9, 120, 8
+    COMBOBOX        IDC_VOICE, 132, 7, 157, 200, CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+
+    LTEXT           "&Rate, words per minute (10 to 700):", -1, 7, 27, 120, 16
+    EDITTEXT        IDC_RATE, 132, 25, 50, 12, ES_NUMBER | ES_AUTOHSCROLL
+    CONTROL         "", IDC_RATE_SPIN, "msctls_updown32", UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS, 182, 25, 11, 12
+
+    LTEXT           "&Pitch in hertz (50 to 500, 0 keeps the voice's own):", -1, 7, 45, 120, 16
+    EDITTEXT        IDC_PITCH, 132, 43, 50, 12, ES_NUMBER | ES_AUTOHSCROLL
+    CONTROL         "", IDC_PITCH_SPIN, "msctls_updown32", UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS, 182, 43, 11, 12
+
+    LTEXT           "Vo&lume, per cent (0 to 100):", -1, 7, 65, 120, 8
+    EDITTEXT        IDC_VOLUME, 132, 63, 50, 12, ES_NUMBER | ES_AUTOHSCROLL
+    CONTROL         "", IDC_VOLUME_SPIN, "msctls_updown32", UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS, 182, 63, 11, 12
+
+    LTEXT           "&Intonation (0 to 100):", -1, 7, 83, 120, 8
+    EDITTEXT        IDC_INTONATION, 132, 81, 50, 12, ES_NUMBER | ES_AUTOHSCROLL
+    CONTROL         "", IDC_INTONATION_SPIN, "msctls_updown32", UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS, 182, 81, 11, 12
+
+    LTEXT           "Head si&ze (minus 100 to 100):", -1, 7, 101, 120, 8
+    EDITTEXT        IDC_HEADSIZE, 132, 99, 50, 12, ES_AUTOHSCROLL
+    CONTROL         "", IDC_HEADSIZE_SPIN, "msctls_updown32", UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS, 182, 99, 11, 12
+
+    LTEXT           "Voi&cing (0 to 100):", -1, 7, 119, 120, 8
+    EDITTEXT        IDC_VOICING, 132, 117, 50, 12, ES_NUMBER | ES_AUTOHSCROLL
+    CONTROL         "", IDC_VOICING_SPIN, "msctls_updown32", UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS, 182, 117, 11, 12
+
+    LTEXT           "S&kim reading level (0 to 8):", -1, 7, 137, 120, 8
+    EDITTEXT        IDC_SKIM, 132, 135, 50, 12, ES_NUMBER | ES_AUTOHSCROLL
+    CONTROL         "", IDC_SKIM_SPIN, "msctls_updown32", UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS, 182, 135, 11, 12
+
+    LTEXT           "Ge&neral pause (0 to 100):", -1, 7, 155, 120, 8
+    EDITTEXT        IDC_PAUSE, 132, 153, 50, 12, ES_NUMBER | ES_AUTOHSCROLL
+    CONTROL         "", IDC_PAUSE_SPIN, "msctls_updown32", UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS, 182, 153, 11, 12
+
+    LTEXT           "&Word pause in milliseconds (0 to 1000):", -1, 7, 171, 120, 16
+    EDITTEXT        IDC_WORDPAUSE, 132, 171, 50, 12, ES_NUMBER | ES_AUTOHSCROLL
+    CONTROL         "", IDC_WORDPAUSE_SPIN, "msctls_updown32", UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS, 182, 171, 11, 12
+
+    LTEXT           "P&hrase pause in milliseconds (0 to 2000):", -1, 7, 189, 120, 16
+    EDITTEXT        IDC_PHRASEPAUSE, 132, 189, 50, 12, ES_NUMBER | ES_AUTOHSCROLL
+    CONTROL         "", IDC_PHRASEPAUSE_SPIN, "msctls_updown32", UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS, 182, 189, 11, 12
+
+    LTEXT           "&Bass lift, per cent (minus 100 to 100):", -1, 7, 207, 120, 16
+    EDITTEXT        IDC_BASSLIFT, 132, 207, 50, 12, ES_AUTOHSCROLL
+    CONTROL         "", IDC_BASSLIFT_SPIN, "msctls_updown32", UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS, 182, 207, 11, 12
+
+    LTEXT           "Hi&gh lift, per cent (minus 100 to 100):", -1, 7, 225, 120, 16
+    EDITTEXT        IDC_HIGHLIFT, 132, 225, 50, 12, ES_AUTOHSCROLL
+    CONTROL         "", IDC_HIGHLIFT_SPIN, "msctls_updown32", UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS, 182, 225, 11, 12
+
+    LTEXT           "&Spelling level (0 is off, up to 15):", -1, 7, 243, 120, 16
+    EDITTEXT        IDC_SPELLING, 132, 243, 50, 12, ES_NUMBER | ES_AUTOHSCROLL
+    CONTROL         "", IDC_SPELLING_SPIN, "msctls_updown32", UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS, 182, 243, 11, 12
+
+    AUTOCHECKBOX    "Use the pronunciation e&xceptions dictionary", IDC_EXCEPTIONS, 7, 262, 282, 10
+    AUTOCHECKBOX    "Use the &anomalies dictionary", IDC_ANOMALIES, 7, 275, 282, 10
+    AUTOCHECKBOX    "Enable &debug logging", IDC_LOGGING, 7, 288, 282, 10
+
+    LTEXT           "&Test text:", -1, 7, 305, 120, 8
+    EDITTEXT        IDC_TESTTEXT, 132, 303, 157, 12, ES_AUTOHSCROLL
+
+    PUSHBUTTON      "Sp&eak test", IDC_TEST, 7, 323, 62, 14
+    PUSHBUTTON      "Appl&y to all voices", IDC_APPLYALL, 74, 323, 76, 14
+    PUSHBUTTON      "Restore de&faults", IDC_DEFAULTS, 155, 323, 72, 14
+    DEFPUSHBUTTON   "Cl&ose", IDOK, 239, 323, 50, 14
+
+    LTEXT           "Every change is saved as you make it and applies to the selected voice on its next utterance, including while a screen reader is speaking. Intonation, head size and voicing restart the speech engine, so they take a moment longer.", IDC_INFO, 7, 343, 282, 34
+END

@@ -1,0 +1,39 @@
+#pragma once
+
+#define IDD_CONFIG            100
+
+#define IDC_VOICE             1001
+#define IDC_RATE              1002
+#define IDC_RATE_SPIN         1003
+#define IDC_PITCH             1004
+#define IDC_PITCH_SPIN        1005
+#define IDC_VOLUME            1006
+#define IDC_VOLUME_SPIN       1007
+#define IDC_INTONATION        1008
+#define IDC_INTONATION_SPIN   1009
+#define IDC_HEADSIZE          1010
+#define IDC_HEADSIZE_SPIN     1011
+#define IDC_VOICING           1012
+#define IDC_VOICING_SPIN      1013
+#define IDC_SKIM              1014
+#define IDC_SKIM_SPIN         1015
+#define IDC_PAUSE             1016
+#define IDC_PAUSE_SPIN        1017
+#define IDC_WORDPAUSE         1018
+#define IDC_WORDPAUSE_SPIN    1019
+#define IDC_PHRASEPAUSE       1020
+#define IDC_PHRASEPAUSE_SPIN  1021
+#define IDC_BASSLIFT          1022
+#define IDC_BASSLIFT_SPIN     1023
+#define IDC_HIGHLIFT          1024
+#define IDC_HIGHLIFT_SPIN     1025
+#define IDC_SPELLING          1026
+#define IDC_SPELLING_SPIN     1027
+#define IDC_EXCEPTIONS        1028
+#define IDC_ANOMALIES         1029
+#define IDC_LOGGING           1030
+#define IDC_TESTTEXT          1031
+#define IDC_TEST              1032
+#define IDC_APPLYALL          1033
+#define IDC_DEFAULTS          1034
+#define IDC_INFO              1035

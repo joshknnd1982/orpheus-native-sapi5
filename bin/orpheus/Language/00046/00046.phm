@@ -1,0 +1,60 @@
+_+,+,Stressed syllable
+_*,*,Syllable
+_-,-,Unstressed syllable
+_AA,A,Long A
+_A,a,Short A
+_B,B,B
+_D,D,D
+_EE,I,Long E
+_EX,f,Alternative short A/Ä
+_E,x,Short E more front than short Ä
+_F,F,F
+_G,G,G
+_H,H,H
+_II,v,Long I
+_I,i,Short I
+_J,Y,J
+_KX,3,Non-plosive K
+_K,K,K
+_L,L,L
+_MX,m,Final M
+_M,M,M
+_NGX,k,NG sound with release
+_NG,n,NG
+_NN,c,extra nasal N
+_N,N,N
+_OO,O,Long O
+_O,o,Short O
+_PX,2,Non-plosive P
+_P,P,P
+_RD,d,Retroflex D
+_RN,j,Retroflex N
+_RS,C,Retroflexive S (RS)
+_RT,b,Retroflex T (RT)
+_RX,t,English-type R
+_R,R,Rolling R
+_SJ,W,SJ sound
+_S,S,S
+_TJ,s,TJ sound
+_TX,4,Non-plosive T
+_T,T,T
+_UU,U,Long U
+_UX,Z,Semi-short U
+_U,u,Short U
+_V,V,V
+_XA,1,Voiced effect
+_XB,0,Unvoiced effect
+_XP,p,Short silence
+_XY,|,Inclusive R
+_YY,g,Long Y
+_Y,y,Short Y
+_ÄÄR,J,Long Ä before R
+_ÄÄ,Q,Long Ä
+_ÄR,r,Short Ä before R
+_Ä,e,Short Ä
+_ÅÅ,w,Long Å
+_Å,l,Short Å
+_ÖÖR,q,Long Ö before R
+_ÖÖ,E,Long Ö
+_ÖR,z,Short Ö before R
+_Ö,h,Short Ö

@@ -1,0 +1,95 @@
+_+,+,Stressed syllable
+_*,*,Syllable
+_-,-,Unstressed syllable
+_AI,A,SAY
+_AE,æ,BAG
+_A0,h,A No Tone
+_A1,ä,A Tone 1
+_A2,á,A Tone 2
+_A3,â,A Tone 3
+_A4,à,A Tone 4
+_A,x,THE
+_B,B,BOB
+_CH,c,CHIP
+_DH,d,THIS
+_D,D,DID
+_EE,E,HE
+_ER,r,BIRD
+_EI,l,CARE
+_EY,b,MONEY
+_E,5,GET
+_E0,r,E No Tone
+_E1,ë,E Tone 1
+_E2,é,E Tone 2
+_E3,ê,E Tone 3
+_E4,è,E Tone 4
+_F,F,FAR
+_G,G,GO
+_H,H,HAVE
+_IE,I,PIE
+_IA,J,DEER
+_IY,8,BECAUSE
+_I0,i,BIG I No Tone
+_I1,ï,I Tone 1
+_I2,ì,I Tone 2
+_I3,î,I Tone 3
+_I4,í,I Tone 4
+_J,j,JUDGE
+_KE,C,KEY
+_KK,k,SKIP
+_KU,6,CORN
+_K,K,KERB
+_LL,À,TABLE
+_LV,Œ,LLANDAFF
+_LX,1,FILL
+_L,L,LOAD
+_MM,m,RHYTHM
+_M,M,MEET
+_NG,n,THING
+_NN,7,RISEN
+_N,N,NOT
+_OO,v,PUT
+_OW,w,NOW
+_OA0,O,CODE O No Tone
+_OA1,Ö,O Tone 1
+_OA2,Ó,O Tone 2
+_OA3,Ô,O Tone 3
+_OA4,Ò,O Tone 4
+_OR,q,POOR
+_OY,y,BOY
+_O,Q,HOT
+_O0,o,LAWN O No Tone
+_O1,ö,O Tone 1
+_O2,ó,O Tone 2
+_O3,ô,O Tone 3
+_O4,ò,O Tone 4
+_PP,p,SPELL
+_P,P,PEN
+_QQ,X,'AVE
+_Q,6W,QUICK
+_RA,|,Inclusive R
+_RR,3,DRUM
+_R,R,RED
+_SH,s,SHINE
+_S,S,SOON
+_TH,t,THIN
+_TT,f,STILL
+_T,T,TOP
+_UU,Ø,POOL
+_U,µ,SUN
+_U0,u,U No Tone
+_U1,ü,U Tone 1
+_U2,ú,U Tone 2
+_U3,û,U Tone 3
+_U4,ù,U Tone 4
+_UE0,U,UE No Tone
+_UE1,Ü,UE Tone 1
+_UE2,Ú,UE Tone 2
+_UE3,Û,UE Tone 3
+_UE4,Ù,UE Tone 4
+_V,V,VAN
+_W,W,WAS
+_X,kS,AXE
+_Y,Y,YES
+_ZH,z,MEASURE
+_Z,Z,ZIP

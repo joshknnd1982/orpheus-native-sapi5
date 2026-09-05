@@ -1,0 +1,43 @@
+_+,+,Stressed syllable
+_*,*,Syllable
+_-,-,Unstressed syllable
+_AA,A,BARRE
+_AU,O,BEAUCOUP
+_A,a,QUATRE
+_B,B,BON
+_CH,s,CHAQUE
+_D,D,DE
+_EH,e,CETTE
+_EN,1,VENT
+_EU,r,DEUX
+_EZ,E,DONNEZ
+_E,x,CE
+_F,F,FAIT
+_G,G,GRAND
+_IN,2,VIN
+_I,I,SI
+_J,z,JE
+_K,K,QUE
+_L,L,LE
+_M,M,ME
+_NG,n,FOOTING
+_NZ,|,Liaisons
+_N,N,NE
+_OI,w,MOI
+_ON,3,SON
+_OU,U,VOULEZ
+_O,o,POMME
+_P,P,PAR
+_R,R,ROUE
+_S,S,SE
+_T,T,TE
+_UI,J,HUIT
+_UN,4,LUNDI
+_UU,y,BULLETIN
+_U,u,CONNU
+_V,V,VOUS
+_W,W,WEEK END
+_Y,Y,VIEUX
+_Z,Z,DOUZE
+_Ê,7,PRÊT
+_Î,8,DÎNER

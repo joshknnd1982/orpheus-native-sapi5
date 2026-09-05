@@ -1,0 +1,5 @@
+build_x86/
+build_x64/
+output/
+__pycache__/
+*.pyc

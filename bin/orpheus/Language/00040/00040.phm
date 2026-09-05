@@ -1,0 +1,46 @@
+_+,+,Stressed syllable
+_*,*,Syllable
+_-,-,Unstressed syllable
+_AU,w,w
+_AX,x,x
+_A,a,a
+_B,B,B
+_C,c,c
+_DJ,j,j
+_D,D,D
+_EE,E,E
+_EI,é,E
+_EY,A,A
+_E,e,e
+_F,F,F
+_GH,h,h
+_G,G,G
+_H,H,H
+_II,1,1
+_I,i,i
+_J,z,z
+_K,k,unaspirated K
+_KK,K,aspirated K
+_L,L,L
+_M,M,M
+_NG,n,n
+_N,N,N
+_OI,y,y
+_OX,Q,Q
+_O,o,o
+_P,p,unaspirated P
+_PP,P,aspirated P
+_R,R,R
+_SH,s,s
+_S,S,S
+_TS,2,2
+_T,t,unaspirated T
+_TT,T,aspirated T
+_UW,î,î
+_U,u,u
+_V,V,V
+_W,W,semivowel line /u/
+_EX,X,semivowel like /e/
+_Y,Y,semivowel like /i/
+_X,g,glotal stop
+_Z,Z,Z
