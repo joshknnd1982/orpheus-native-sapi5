@@ -6,6 +6,8 @@
 #include <cmath>
 #include <cwctype>
 #include <algorithm>
+#include <set>
+#include <utility>
 
 #include "utils.hpp"
 #include "ISpTTSEngineImpl.hpp"
@@ -397,30 +399,62 @@ STDMETHODIMP ISpTTSEngineImpl::GetOutputFormat(
 void ISpTTSEngineImpl::sync_voice_attributes(const voice_attributes& attr,
                                              const settings::VoiceSettings& config)
 {
+    // Nothing configured for this voice: leave the engine's own values alone.
+    // They are per-voice - Cantonese ships intonation 80, not 50 - so writing
+    // a blanket default here would retune voices the user never touched.
+    if (config.intonation == settings::UNSET &&
+        config.head_size == settings::UNSET &&
+        config.voicing == settings::UNSET) {
+        return;
+    }
+
     static FILETIME last_seen = {};
+    static std::set<std::pair<int, int>> synced;
     static CRITICAL_SECTION* guard = [] {
         auto* cs = new CRITICAL_SECTION();
         InitializeCriticalSection(cs);
         return cs;
     }();
 
+    const std::pair<int, int> key(attr.get_country(), attr.get_slot());
+
     EnterCriticalSection(guard);
-    const bool changed = settings::changed_since(last_seen);
+    // A changed settings file invalidates what every voice was last synced to;
+    // otherwise each voice still needs checking once, because the settings are
+    // per voice and only the first one used would ever be looked at.
+    if (settings::changed_since(last_seen)) {
+        synced.clear();
+    }
+    const bool already_done = synced.count(key) != 0;
     LeaveCriticalSection(guard);
-    if (!changed) {
+    if (already_done) {
         return;
     }
 
+    // Start from what the engine currently holds, so an attribute the user has
+    // not set keeps the value that voice shipped with.
     voicedesc::Attributes wanted;
-    wanted.intonation = config.intonation;
-    wanted.head_size = config.head_size;
-    wanted.voicing = config.voicing;
-    if (voicedesc::matches(attr.get_country(), attr.get_slot(), wanted)) {
+    if (!voicedesc::read(key.first, key.second, wanted)) {
+        // The table is not there yet; try again on the next utterance rather
+        // than writing guesses over it.
         return;
     }
-    if (voicedesc::write(attr.get_country(), attr.get_slot(), wanted)) {
-        ORPHEUS_LOG("Speak: voice table updated (intonation=%d headSize=%d voicing=%d)",
-                    wanted.intonation, wanted.head_size, wanted.voicing);
+    if (config.intonation != settings::UNSET) wanted.intonation = config.intonation;
+    if (config.head_size != settings::UNSET)  wanted.head_size = config.head_size;
+    if (config.voicing != settings::UNSET)    wanted.voicing = config.voicing;
+
+    EnterCriticalSection(guard);
+    synced.insert(key);
+    LeaveCriticalSection(guard);
+
+    if (voicedesc::matches(key.first, key.second, wanted)) {
+        return;
+    }
+    if (voicedesc::write(key.first, key.second, wanted)) {
+        ORPHEUS_LOG("Speak: voice table updated for %d/%d "
+                    "(intonation=%d headSize=%d voicing=%d)",
+                    key.first, key.second, wanted.intonation, wanted.head_size,
+                    wanted.voicing);
         OrpheusClient::instance().recycle_all();
     }
 }
@@ -442,6 +476,23 @@ STDMETHODIMP ISpTTSEngineImpl::Speak(
         const voice_attributes attr(voice_index_);
         const settings::VoiceSettings config =
             settings::load_voice(attr.get_country(), attr.get_slot());
+
+        // Resolve the language FIRST, before anything reads the engine's voice
+        // table.
+        //
+        // Two reasons.  PARAM_LANGUAGE is a position in the engine's language
+        // list, and that list holds only the languages Setup installed, so a
+        // partial install would otherwise speak every later language wrongly.
+        // And this call is what starts a host, which is what makes the engine
+        // build its voice table in the first place: read the table before that
+        // and, on a freshly installed machine, the very first utterance falls
+        // back to a default pitch instead of the voice's own.
+        int lang_index = attr.get_lang_index();
+        if (!OrpheusClient::instance().language_index_for(attr.get_country(), lang_index)) {
+            ORPHEUS_LOG("Speak: could not resolve country %d; using catalog index %d",
+                        attr.get_country(), lang_index);
+        }
+
         sync_voice_attributes(attr, config);
 
         // Pitch 0 in the settings means "keep this voice's own pitch", which
@@ -466,7 +517,7 @@ STDMETHODIMP ISpTTSEngineImpl::Speak(
 
         ORPHEUS_LOG("Speak: flags=0x%08lX voice=%d (%S) lang=%d slot=%d rate=%ld volume=%u",
                     dwSpeakFlags, voice_index_, attr.entry().token_name,
-                    attr.get_lang_index(), attr.get_slot(), sapi_rate, sapi_volume);
+                    lang_index, attr.get_slot(), sapi_rate, sapi_volume);
 
         const int default_rate = engine_rate(config.rate, sapi_rate);
         const int default_pitch = engine_pitch(base_pitch, 0);
@@ -687,7 +738,7 @@ STDMETHODIMP ISpTTSEngineImpl::Speak(
                 params.push_back(p);
             };
 
-            add(0, PARAM_LANGUAGE, attr.get_lang_index());
+            add(0, PARAM_LANGUAGE, lang_index);
             add(0, PARAM_VOICE, attr.get_slot());
             add(0, PARAM_RATE, engine_rate(config.rate, sapi_rate));
             add(0, PARAM_PITCH, engine_pitch(base_pitch, 0));

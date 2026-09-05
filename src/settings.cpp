@@ -4,6 +4,7 @@
 #include <cstdio>
 
 #include "orpheus_protocol.h"
+#include "installed_voices.h"
 #include "voice_catalog.hpp"
 
 namespace Orpheus {
@@ -32,6 +33,17 @@ bool write_int(const wchar_t* section, const wchar_t* name, int value,
     wchar_t buffer[32];
     swprintf_s(buffer, L"%d", value);
     return WritePrivateProfileStringW(section, name, buffer, path.c_str()) != FALSE;
+}
+
+// UNSET is stored by removing the key, so the file never carries a sentinel
+// and a hand-edited file with the key deleted means the same thing.
+bool write_int_or_clear(const wchar_t* section, const wchar_t* name, int value,
+                        const std::wstring& path)
+{
+    if (value == UNSET) {
+        return WritePrivateProfileStringW(section, name, nullptr, path.c_str()) != FALSE;
+    }
+    return write_int(section, name, value, path);
 }
 
 int read_int(const wchar_t* section, const wchar_t* name, int fallback,
@@ -70,9 +82,17 @@ VoiceSettings clamp(const VoiceSettings& value)
     r.high_lift = clamp_int(r.high_lift, LIFT_MIN, LIFT_MAX);
     r.exceptions = clamp_int(r.exceptions, 0, 1);
     r.anomalies = clamp_int(r.anomalies, 0, 1);
-    r.intonation = clamp_int(r.intonation, INTONATION_MIN, INTONATION_MAX);
-    r.head_size = clamp_int(r.head_size, HEAD_SIZE_MIN, HEAD_SIZE_MAX);
-    r.voicing = clamp_int(r.voicing, VOICING_MIN, VOICING_MAX);
+    // UNSET passes through untouched - clamping it would turn "leave the
+    // engine's own value alone" into a concrete number.
+    if (r.intonation != UNSET) {
+        r.intonation = clamp_int(r.intonation, INTONATION_MIN, INTONATION_MAX);
+    }
+    if (r.head_size != UNSET) {
+        r.head_size = clamp_int(r.head_size, HEAD_SIZE_MIN, HEAD_SIZE_MAX);
+    }
+    if (r.voicing != UNSET) {
+        r.voicing = clamp_int(r.voicing, VOICING_MIN, VOICING_MAX);
+    }
     return r;
 }
 
@@ -149,9 +169,9 @@ bool save_voice(int country, int slot, const VoiceSettings& raw)
     ok &= write_int(section, L"highLift", v.high_lift, path);
     ok &= write_int(section, L"exceptions", v.exceptions, path);
     ok &= write_int(section, L"anomalies", v.anomalies, path);
-    ok &= write_int(section, L"intonation", v.intonation, path);
-    ok &= write_int(section, L"headSize", v.head_size, path);
-    ok &= write_int(section, L"voicing", v.voicing, path);
+    ok &= write_int_or_clear(section, L"intonation", v.intonation, path);
+    ok &= write_int_or_clear(section, L"headSize", v.head_size, path);
+    ok &= write_int_or_clear(section, L"voicing", v.voicing, path);
     return ok;
 }
 
@@ -160,6 +180,9 @@ bool apply_to_all_voices(const VoiceSettings& value)
     bool ok = true;
     for (int i = 0; i < sapi::orpheus_voice_count; ++i) {
         const sapi::voice_entry& voice = sapi::orpheus_voices[i];
+        if (!Orpheus::voices::installed(voice.country, voice.slot)) {
+            continue;
+        }
         ok &= save_voice(voice.country, voice.slot, value);
     }
     return ok;

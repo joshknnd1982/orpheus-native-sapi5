@@ -6,6 +6,7 @@
 #include "com.hpp"
 #include "registry.hpp"
 #include "sapi_registration.h"
+#include "version.h"
 #include "ISpTTSEngineImpl.hpp"
 #include "IEnumSpObjectTokensImpl.hpp"
 #include "debug_log.h"
@@ -60,7 +61,7 @@ STDAPI DllRegisterServer()
         Orpheus::sapi::register_token_enumerator(
             HKEY_LOCAL_MACHINE,
             clsid_to_string(__uuidof(Orpheus::sapi::IEnumSpObjectTokensImpl)));
-        ORPHEUS_LOG("DllRegisterServer: registered");
+        ORPHEUS_LOG("DllRegisterServer: registered, version " ORPHEUS_VERSION_STRING);
         return S_OK;
     }
     catch (const std::bad_alloc&) {

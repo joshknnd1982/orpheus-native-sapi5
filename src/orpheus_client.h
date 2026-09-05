@@ -129,6 +129,13 @@ public:
     bool get_params(std::vector<ParamInfo>& out);
     bool get_voices(int country, std::vector<std::string>& out);
 
+    // PARAM_LANGUAGE selects a language by its position in the engine's list,
+    // and that list only contains the languages actually installed - so when
+    // Setup omits one, every position after it shifts.  Never assume the
+    // catalog order: ask the engine once and cache the mapping.
+    // Returns false if this country is not installed.
+    bool language_index_for(int country, int& index_out);
+
     // Renders one utterance, streaming audio into sink as it is rendered.
     // `params` carries the engine parameter block; offsets in it are character
     // positions within `text`.  The caller does not add the final index
@@ -183,6 +190,11 @@ private:
     ULONGLONG recover_deadline_ = 0;
     bool standby_spawning_ = false;
     bool wsa_started_ = false;
+
+    // country -> position in the engine's language list, filled on first use.
+    CRITICAL_SECTION lang_cs_;
+    std::map<int, int> lang_index_;
+    bool lang_index_ready_ = false;
 };
 
 }

@@ -18,6 +18,13 @@
 namespace Orpheus {
 namespace settings {
 
+// "The user has not chosen a value for this." Used for the three attributes
+// that live in the engine's own voice table: the engine ships per-voice values
+// there - Cantonese's intonation is 80, not 50 - and installing this wrapper
+// must not flatten them to one set of numbers. Nothing is written to the voice
+// table until the user actually changes something.
+constexpr int UNSET = -1000000;
+
 struct VoiceSettings {
     // Inline engine parameters, applied to every utterance.
     int rate = 160;          // 10..700 wpm; SAPI's -10..10 modulates around this
@@ -34,9 +41,10 @@ struct VoiceSettings {
     int anomalies = 1;       // 0/1
 
     // Held in the engine's own voice table, not sent per utterance.
-    int intonation = 50;     // 0..100
-    int head_size = 0;       // -100..100
-    int voicing = 100;       // 0..100
+    // UNSET means "leave whatever the engine shipped for this voice".
+    int intonation = UNSET;  // 0..100
+    int head_size = UNSET;   // -100..100
+    int voicing = UNSET;     // 0..100
 };
 
 [[nodiscard]] VoiceSettings clamp(const VoiceSettings& value);

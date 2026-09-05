@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(OrpheusNativeSAPI VERSION 1.0.0 LANGUAGES C CXX)
+project(OrpheusNativeSAPI VERSION 1.1.0 LANGUAGES C CXX)
 
 # Keep this version, installer/orpheus_native.iss's MyAppVersion and the
 # README in step.
@@ -29,6 +29,7 @@ add_library(orpheus_core STATIC
     src/orpheus_client.cpp
     src/settings.cpp
     src/voicedesc.cpp
+    src/installed_voices.cpp
     src/debug_log.cpp
 )
 
@@ -46,6 +47,7 @@ add_library(OrpheusNativeSAPI SHARED
     src/IEnumSpObjectTokensImpl.cpp
     src/ISpTTSEngineImpl.cpp
     src/voice_token.cpp
+    src/version.rc
     src/orpheus_sapi.def
 )
 
@@ -90,6 +92,7 @@ if(NOT BUILD_X64)
     add_executable(OrpheusNativeConfig WIN32
         src/config_tool.cpp
         src/orpheus_config.rc
+        src/version_config.rc
     )
     target_include_directories(OrpheusNativeConfig PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(OrpheusNativeConfig PRIVATE orpheus_core comctl32 ole32)

@@ -452,6 +452,42 @@ OrpheusClient::OrpheusClient()
 {
     InitializeCriticalSection(&state_cs_);
     InitializeCriticalSection(&render_cs_);
+    InitializeCriticalSection(&lang_cs_);
+}
+
+bool OrpheusClient::language_index_for(int country, int& index_out)
+{
+    {
+        ScopedLock lock(&lang_cs_);
+        if (lang_index_ready_) {
+            auto it = lang_index_.find(country);
+            if (it == lang_index_.end()) {
+                return false;
+            }
+            index_out = it->second;
+            return true;
+        }
+    }
+
+    std::vector<LangInfo> langs;
+    if (!get_langs(langs) || langs.empty()) {
+        return false;
+    }
+
+    ScopedLock lock(&lang_cs_);
+    lang_index_.clear();
+    for (size_t i = 0; i < langs.size(); ++i) {
+        lang_index_[langs[i].country] = static_cast<int>(i);
+    }
+    lang_index_ready_ = true;
+    ORPHEUS_LOG("Client: engine offers %u languages", static_cast<unsigned>(langs.size()));
+    auto it = lang_index_.find(country);
+    if (it == lang_index_.end()) {
+        ORPHEUS_LOG("Client: country %d is not installed", country);
+        return false;
+    }
+    index_out = it->second;
+    return true;
 }
 
 OrpheusClient::~OrpheusClient()

@@ -16,13 +16,30 @@ setup.**
 
 ## Download
 
-Get `OrpheusNativeSAPI_Setup.exe` from the
+Get `OrpheusNativeSAPI_Setup_1.1.0.exe` from the
 [Releases](../../releases) page.
 
-The installer places the 32-bit and 64-bit interfaces, the engine, every
-language and voice data file, and the configuration utility, and registers the
-voices with SAPI. It needs administrator rights because SAPI's voice list is
+The installer places the 32-bit and 64-bit interfaces, the engine, the
+languages you choose and the configuration utility, and registers the voices
+with SAPI. It needs administrator rights because SAPI's voice list is
 machine-wide.
+
+### Choosing what gets installed
+
+The wizard's component page offers three setup types — **Full** (all 25
+languages, all 48 voices), **English only** (US and UK English, four voices),
+and **Custom**. Under Custom every language is a separate tick, and each
+language's *second* voice is a tick of its own beneath it, so you can take
+German with both Klaus and Andreas but Welsh with David alone. Setup will not
+let you continue with no language selected.
+
+Only the voices you chose appear in the Windows voice list and in the
+configuration utility — a voice whose data files are absent is never offered,
+so it cannot be selected and then fail. Re-running the installer lets you
+change the selection.
+
+Your choice is recorded in `voices.ini` in the installation folder, which the
+SAPI interfaces and the configuration utility read.
 
 Windows SmartScreen will warn about an unrecognised publisher. That is a
 reputation signal on a newly released, unsigned binary, not a malware finding.
@@ -111,15 +128,22 @@ speech setting and is not exposed.
 
 | Parameter | Range | Default |
 |---|---|---|
-| Intonation | 0–100 | 50 |
-| Head size | −100–100 | 0 |
-| Voicing | 0–100 | 100 |
+| Intonation | 0–100 | per voice, usually 50 |
+| Head size | −100–100 | per voice, usually 0 |
+| Voicing | 0–100 | per voice, usually 100 |
 
 These three are not engine parameters — there is no id for them in the
 protocol. They live in a binary blob the engine keeps in the registry and
 reads when a synthesis process starts, so changing one restarts the engine
 processes. That takes a moment longer than the other settings; everything else
 applies to the very next utterance.
+
+The defaults in that table are **per voice**, not global: Chinese Putonghua and
+Cantonese ship with intonation 80 rather than 50, and the second Czech and
+Malay voices with voicing 90 rather than 100. So nothing is written to the
+voice table until you actually change one of these three — installing this
+wrapper does not retune voices you never touched. Until then the configuration
+utility shows the value the engine itself holds for that voice.
 
 ### Pitch, and why 0 means something
 
@@ -136,9 +160,10 @@ pitch overrides it for that voice and flattens the difference.
 installation.
 
 Pick a voice from the drop-down list and every setting below it applies to
-that voice. Changes are written as you make them and are picked up on the
-next utterance, including while a screen reader is speaking. **Apply to all
-voices** copies the current settings across all 48.
+that voice. The list holds only the voices that were installed. Changes are
+written as you make them and are picked up on the next utterance, including
+while a screen reader is speaking. **Apply to all voices** copies the current
+settings across every installed voice.
 
 Every control is labelled, is a tab stop and has its own access key; the
 dialog is verified after each build by `a11y_probe`, which reads the live
@@ -171,6 +196,14 @@ Both interfaces are built from the same source. The engine is 32-bit only, so
 the 64-bit interface talks to the same 32-bit host over a loopback socket
 rather than needing a separate bridge — the socket *is* the architecture
 boundary. Renders from the two are byte-identical.
+
+One engine quirk worth knowing if you ever compare recordings: **a freshly
+started engine process renders the same text bit-for-bit identically every
+time, but a process that has already spoken does not.** The engine carries
+state across utterances, so the second and third rendering of the same
+sentence differ slightly from the first and from each other. Nothing is wrong
+when that happens; it is not a fault in the wrapper, and it is why the first
+utterance from a newly spawned host is a few milliseconds longer.
 
 **Cancelling never waits for the engine.** The engine's mute command can take
 seconds to settle mid-render, so an interrupted render is discarded rather

@@ -1,0 +1,8 @@
+// File properties for the configuration utility. Same version block as the
+// SAPI5 DLL, renamed for this binary.
+
+#define ORPHEUS_FILE_DESCRIPTION "Orpheus Native Configuration"
+#define ORPHEUS_ORIGINAL_FILENAME "OrpheusNativeConfig.exe"
+#define ORPHEUS_FILE_TYPE VFT_APP
+
+#include "version.rc"

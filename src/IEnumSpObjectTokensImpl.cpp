@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "IEnumSpObjectTokensImpl.hpp"
+#include "installed_voices.h"
 
 namespace Orpheus {
 namespace sapi {
@@ -14,9 +15,15 @@ IEnumSpObjectTokensImpl::IEnumSpObjectTokensImpl(bool initialize)
         return;
     }
 
+    // Only offer voices whose data files Setup actually installed.  Listing a
+    // voice whose language folder is absent would put a name in the Windows
+    // voice list that fails the moment anything selects it.
     sapi_voices_.reserve(static_cast<size_t>(orpheus_voice_count));
     for (int i = 0; i < orpheus_voice_count; ++i) {
-        sapi_voices_.emplace_back(i);
+        const voice_entry& voice = orpheus_voices[i];
+        if (voices::installed(voice.country, voice.slot)) {
+            sapi_voices_.emplace_back(i);
+        }
     }
 }
 

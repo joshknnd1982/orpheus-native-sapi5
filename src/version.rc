@@ -1,0 +1,51 @@
+// File properties for every shipped binary, so Windows Explorer and a support
+// request both show which build is installed. Compiled into the SAPI5 DLL and
+// the configuration utility; ORIGINAL_FILE_NAME distinguishes them.
+
+#include <windows.h>
+#include "version.h"
+
+#ifndef ORPHEUS_FILE_DESCRIPTION
+#define ORPHEUS_FILE_DESCRIPTION "Orpheus Native SAPI5"
+#endif
+
+#ifndef ORPHEUS_ORIGINAL_FILENAME
+#define ORPHEUS_ORIGINAL_FILENAME "OrpheusNativeSAPI.dll"
+#endif
+
+#ifndef ORPHEUS_FILE_TYPE
+#define ORPHEUS_FILE_TYPE VFT_DLL
+#endif
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION    ORPHEUS_VERSION_MAJOR, ORPHEUS_VERSION_MINOR, ORPHEUS_VERSION_PATCH, ORPHEUS_VERSION_BUILD
+PRODUCTVERSION ORPHEUS_VERSION_MAJOR, ORPHEUS_VERSION_MINOR, ORPHEUS_VERSION_PATCH, ORPHEUS_VERSION_BUILD
+FILEFLAGSMASK  VS_FFI_FILEFLAGSMASK
+#ifdef _DEBUG
+FILEFLAGS      VS_FF_DEBUG
+#else
+FILEFLAGS      0x0L
+#endif
+FILEOS         VOS_NT_WINDOWS32
+FILETYPE       ORPHEUS_FILE_TYPE
+FILESUBTYPE    VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName",      "Orpheus Native SAPI5 Project"
+            VALUE "FileDescription",  ORPHEUS_FILE_DESCRIPTION
+            VALUE "FileVersion",      ORPHEUS_VERSION_STRING
+            VALUE "InternalName",     ORPHEUS_ORIGINAL_FILENAME
+            VALUE "LegalCopyright",   "MIT licensed. The Orpheus engine remains the property of Dolphin Computer Access."
+            VALUE "OriginalFilename", ORPHEUS_ORIGINAL_FILENAME
+            VALUE "ProductName",      "Orpheus Native SAPI5"
+            VALUE "ProductVersion",   ORPHEUS_VERSION_STRING
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END

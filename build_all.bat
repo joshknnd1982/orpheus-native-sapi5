@@ -1,7 +1,21 @@
 @echo off
 setlocal
 
-echo Orpheus Native SAPI5 Build
+rem The version lives in src/version.h and is read back here, so the installer
+rem filename, the release tag and every binary's file properties all carry the
+rem same number and a user can tell which build they have.
+rem findstr does a substring match, so the pattern carries the trailing space:
+rem without it ORPHEUS_VERSION_STRING_W matches too and wins, leaving the
+rem version as L"1.1.0".
+for /f "tokens=3 delims= " %%v in ('findstr /c:"#define ORPHEUS_VERSION_STRING " src\version.h') do (
+    set "ORPHEUS_VERSION=%%~v"
+)
+if not defined ORPHEUS_VERSION (
+    echo ERROR: could not read the version from src\version.h
+    exit /b 1
+)
+
+echo Orpheus Native SAPI5 Build %ORPHEUS_VERSION%
 echo.
 
 set BUILD_DIR_X86=build_x86
@@ -118,5 +132,5 @@ if errorlevel 1 (
 
 echo.
 echo Build completed successfully.
-echo Installer: %OUTPUT_DIR%\OrpheusNativeSAPI_Setup.exe
+echo Installer: %OUTPUT_DIR%\OrpheusNativeSAPI_Setup_%ORPHEUS_VERSION%.exe
 endlocal

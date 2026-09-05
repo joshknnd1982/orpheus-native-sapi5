@@ -14,11 +14,15 @@
 #include <commctrl.h>
 #include <sapi.h>
 #include <string>
+#include <vector>
 
 #include "config_resource.h"
+#include "version.h"
+#include "installed_voices.h"
 #include "orpheus_protocol.h"
 #include "settings.h"
 #include "voice_catalog.hpp"
+#include "voicedesc.h"
 #include "debug_log.h"
 
 #pragma comment(lib, "comctl32.lib")
@@ -43,7 +47,22 @@ constexpr wchar_t APP_TITLE[] = L"Orpheus Native Configuration";
 bool g_loading = true;
 
 ISpVoice* g_voice = nullptr;
+
+// Catalog index of the voice being edited, and the catalog indices behind the
+// drop-down list.  The two differ whenever Setup installed a subset.
 int g_voice_index = 0;
+std::vector<int> g_listed;
+
+// Position of a catalog index within the drop-down list, or -1.
+int list_position_of(int catalog_index)
+{
+    for (size_t i = 0; i < g_listed.size(); ++i) {
+        if (g_listed[i] == catalog_index) {
+            return static_cast<int>(i);
+        }
+    }
+    return -1;
+}
 
 struct SpinBinding {
     int edit_id;
@@ -85,9 +104,27 @@ void load_settings_into_dialog(HWND dialog)
     g_loading = true;
 
     const Orpheus::sapi::voice_entry& voice = orpheus_voices[g_voice_index];
-    const settings::VoiceSettings v = settings::load_voice(voice.country, voice.slot);
+    settings::VoiceSettings v = settings::load_voice(voice.country, voice.slot);
 
-    SendDlgItemMessageW(dialog, IDC_VOICE, CB_SETCURSEL, g_voice_index, 0);
+    // Intonation, head size and voicing default to "not set", meaning the
+    // engine's own per-voice value is in force. Show that value rather than a
+    // blanket default, so the boxes tell the truth about what will be spoken.
+    if (v.intonation == settings::UNSET || v.head_size == settings::UNSET ||
+        v.voicing == settings::UNSET) {
+        Orpheus::voicedesc::Attributes stored;
+        const bool have = Orpheus::voicedesc::read(voice.country, voice.slot, stored);
+        if (v.intonation == settings::UNSET) {
+            v.intonation = have ? stored.intonation : protocol::INTONATION_DEFAULT;
+        }
+        if (v.head_size == settings::UNSET) {
+            v.head_size = have ? stored.head_size : protocol::HEAD_SIZE_DEFAULT;
+        }
+        if (v.voicing == settings::UNSET) {
+            v.voicing = have ? stored.voicing : protocol::VOICING_DEFAULT;
+        }
+    }
+
+    SendDlgItemMessageW(dialog, IDC_VOICE, CB_SETCURSEL, list_position_of(g_voice_index), 0);
     SetDlgItemInt(dialog, IDC_RATE, v.rate, TRUE);
     SetDlgItemInt(dialog, IDC_PITCH, v.pitch, TRUE);
     SetDlgItemInt(dialog, IDC_VOLUME, v.volume, TRUE);
@@ -224,9 +261,17 @@ INT_PTR CALLBACK dialog_proc(HWND dialog, UINT message, WPARAM wparam, LPARAM /*
 {
     switch (message) {
     case WM_INITDIALOG: {
+        // Only list voices Setup installed, and remember which catalog entry
+        // each row stands for.
+        g_listed.clear();
         for (int i = 0; i < orpheus_voice_count; ++i) {
+            const Orpheus::sapi::voice_entry& voice = orpheus_voices[i];
+            if (!Orpheus::voices::installed(voice.country, voice.slot)) {
+                continue;
+            }
+            g_listed.push_back(i);
             SendDlgItemMessageW(dialog, IDC_VOICE, CB_ADDSTRING, 0,
-                                reinterpret_cast<LPARAM>(orpheus_voices[i].token_name));
+                                reinterpret_cast<LPARAM>(voice.token_name));
         }
         for (int i = 0; i < SPIN_COUNT; ++i) {
             SendDlgItemMessageW(dialog, SPINS[i].spin_id, UDM_SETRANGE32,
@@ -236,6 +281,11 @@ INT_PTR CALLBACK dialog_proc(HWND dialog, UINT message, WPARAM wparam, LPARAM /*
         SetDlgItemTextW(dialog, IDC_TESTTEXT, settings::test_text().c_str());
 
         g_voice_index = settings::last_voice_index();
+        // The remembered voice may not be one of the installed ones - after a
+        // reinstall with fewer languages, for instance.
+        if (list_position_of(g_voice_index) < 0) {
+            g_voice_index = g_listed.empty() ? 0 : g_listed[0];
+        }
         load_settings_into_dialog(dialog);
         g_loading = false;
         return TRUE;
@@ -251,11 +301,11 @@ INT_PTR CALLBACK dialog_proc(HWND dialog, UINT message, WPARAM wparam, LPARAM /*
 
         case IDC_VOICE:
             if (notification == CBN_SELCHANGE && !g_loading) {
-                const int selected =
+                const int row =
                     static_cast<int>(SendDlgItemMessageW(dialog, IDC_VOICE, CB_GETCURSEL, 0, 0));
-                if (selected >= 0 && selected < orpheus_voice_count) {
-                    g_voice_index = selected;
-                    settings::set_last_voice_index(selected);
+                if (row >= 0 && row < static_cast<int>(g_listed.size())) {
+                    g_voice_index = g_listed[row];
+                    settings::set_last_voice_index(g_voice_index);
                     load_settings_into_dialog(dialog);
                 }
                 return TRUE;
@@ -273,8 +323,11 @@ INT_PTR CALLBACK dialog_proc(HWND dialog, UINT message, WPARAM wparam, LPARAM /*
             if (notification == BN_CLICKED) {
                 const settings::VoiceSettings v = read_dialog(dialog);
                 settings::apply_to_all_voices(v);
-                MessageBoxW(dialog, L"These settings now apply to all 48 Orpheus voices.",
-                            APP_TITLE, MB_OK | MB_ICONINFORMATION);
+                wchar_t message[128];
+                swprintf_s(message,
+                           L"These settings now apply to all %d installed Orpheus voices.",
+                           Orpheus::voices::installed_count());
+                MessageBoxW(dialog, message, APP_TITLE, MB_OK | MB_ICONINFORMATION);
                 return TRUE;
             }
             break;
@@ -353,7 +406,7 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE /*prev*/, LPWSTR /*cmdline*/, 
     InitCommonControlsEx(&icc);
     CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 
-    ORPHEUS_LOG("Config: utility started");
+    ORPHEUS_LOG("Config: utility started, version " ORPHEUS_VERSION_STRING);
     DialogBoxParamW(instance, MAKEINTRESOURCEW(IDD_CONFIG), nullptr, dialog_proc, 0);
     ORPHEUS_LOG("Config: utility closed");
 
