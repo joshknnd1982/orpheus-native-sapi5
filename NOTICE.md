@@ -15,19 +15,22 @@ remain the property of Dolphin Computer Access. They are redistributed here
 unmodified so that an abandoned synthesiser keeps working for the people who
 rely on it, and are not licensed under the terms above.
 
-## Not covered: the SAPI 5 COM skeleton from the BestSpeech SAPI 5 wrapper
+## Not covered: files adapted from the BestSpeech SAPI 5 wrapper
 
-The files below are an exception to the scope statement above, which says the MIT licence
-covers the SAPI 5 interface and engine client (src/). They were adapted from the SAPI 5 COM
-server and token enumerator skeleton of the BestSpeech SAPI 5 wrapper by Gozaltech
-(<https://github.com/gozaltech/BstSpeech-sapi>), they are not the work of this project's
-author, and the MIT License does not cover them. They stay under their original author's terms.
+The files below were adapted from the BestSpeech SAPI 5 wrapper by Gozaltech
+(<https://github.com/gozaltech/BstSpeech-sapi>) and still contain much of that project's
+code: its SAPI 5 COM server and token enumerator skeleton. They are an exception to the
+scope statement above, which says the MIT licence covers the SAPI 5 interface and engine
+client (src/). The MIT License does not cover them, and they stay under their original
+author's terms.
 
 - `src/com.hpp` and `src/com.cpp`
 - `src/registry.hpp` and `src/registry.cpp`
 - `src/utils.hpp`
+- `src/sapi_main.cpp`
 - `src/ISpDataKeyImpl.hpp` and `src/ISpDataKeyImpl.cpp`
 - `src/IEnumSpObjectTokensImpl.hpp` and `src/IEnumSpObjectTokensImpl.cpp`
+- `src/ISpTTSEngineImpl.hpp`
 - `src/voice_token.hpp` and `src/voice_token.cpp`
 
 ## Not covered: the NVDA add-on reference copy
