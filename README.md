@@ -361,9 +361,15 @@ endorsed by Dolphin.
 The engine host and the original driver came from an NVDA add-on; the SAPI5
 interface, configuration utility and installer here are new.
 
+The SAPI 5 COM server and token enumerator skeleton was adapted from the
+BestSpeech SAPI 5 wrapper by Gozaltech
+(<https://github.com/gozaltech/BstSpeech-sapi>); see [NOTICE.md](NOTICE.md).
+
 ## License
 
 The SAPI5 interface, configuration utility, test harnesses and installer
-script in this repository are open source. The Orpheus engine binaries and
-voice data remain the property of Dolphin Computer Access and are included
-here only so that the abandoned synthesiser keeps working.
+script in this repository are licensed under the MIT License (see
+[LICENSE](LICENSE)), except for the material [NOTICE.md](NOTICE.md) lists as
+not covered. The Orpheus engine binaries and voice data remain the property of
+Dolphin Computer Access and are included here only so that the abandoned
+synthesiser keeps working.

@@ -20,15 +20,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----------------------------------------------------------------------------
-Scope
-
-The MIT licence above covers the work created in this repository: the SAPI 5
-interface and engine client (src/), the test harnesses (test/), the
-configuration utility, the build files and the Inno Setup script (installer/).
-
-It does NOT cover the Dolphin Orpheus speech engine or its voice and language
-data - the contents of bin/orpheus/ and bin/orpheus-native-host.exe. Those
-remain the property of Dolphin Computer Access. They are redistributed here
-unmodified so that an abandoned synthesiser keeps working for the people who
-rely on it, and are not licensed under the terms above.
